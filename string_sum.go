@@ -26,34 +26,24 @@ var (
 // Use the errors defined above as described, again wrapping into fmt.Errorf
 
 func StringSum(input string) (output string, err error) {
-	var clearInput, oneNumber, twoNumber string
-	var sumint, one, two int
-
-	clearInput = strings.ReplaceAll(input, " ", "")
-	if clearInput == "" {
+	var (
+		oneNumber, twoNumber string
+		one, two             int
+	)
+	input = strings.ReplaceAll(input, " ", "")
+	if input == "" {
 		return "", fmt.Errorf("nothing to calculate. %w", errorEmptyInput)
 	}
-	if len(clearInput) < 3 {
+	if len(input) < 3 {
 		return "", fmt.Errorf("number of operands must be equal two. %w", errorNotTwoOperands)
 	}
-	for i := 0; i < len(clearInput); i++ {
-		V := string(clearInput[i])
-		if string(V) == "-" {
-			i++
-			if oneNumber == "" {
-				oneNumber = clearInput[i-1 : i+1]
-			} else {
-				twoNumber = clearInput[i-1 : i+1]
-			}
-		} else {
-			if oneNumber == "" {
-				oneNumber = clearInput[i : i+1]
-			} else {
-				twoNumber = clearInput[i : i+1]
-			}
+	for i, v := range input {
+		V := string(v)
+		if string(V) == "+" {
+			oneNumber = input[:i]
+			twoNumber = input[i+1:]
 		}
 	}
-
 	one, err = strconv.Atoi(oneNumber)
 	if err != nil {
 		fmt.Println(err)
@@ -62,7 +52,5 @@ func StringSum(input string) (output string, err error) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	sumint = one + two
-	output = strconv.FormatInt(int64(sumint), 10)
-	return output, nil
+	return strconv.FormatInt(int64(one+two), 10), nil
 }
