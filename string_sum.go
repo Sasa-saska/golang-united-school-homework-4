@@ -28,20 +28,24 @@ var (
 func StringSum(input string) (output string, err error) {
 	var (
 		oneNumber, twoNumber string
-		one, two             int
+		one, two, count      int
 	)
 	input = strings.ReplaceAll(input, " ", "")
 	if input == "" {
 		return "", fmt.Errorf("nothing to calculate. %w", errorEmptyInput)
 	}
-	if len(input) < 3 {
-		return "", fmt.Errorf("number of operands must be equal two. %w", errorNotTwoOperands)
-	}
 	for i, v := range input {
 		V := string(v)
-		if string(V) == "+" {
+		if string(V) == "+" && count < 2 {
+			count++
 			oneNumber = input[:i]
 			twoNumber = input[i+1:]
+		} else if count == 2 {
+			return "", fmt.Errorf("the number of operands is more than two. %w", errorNotTwoOperands)
+		} else if count < 1 && i+1 == len(input) {
+			return "", fmt.Errorf("number of operands must be equal two. %w", errorNotTwoOperands)
+		} else if count == 0 && i+1 == len(input) {
+			return "", fmt.Errorf("nothing to calculate. %w", errorEmptyInput)
 		}
 	}
 	one, err = strconv.Atoi(oneNumber)
